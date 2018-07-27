@@ -87,3 +87,26 @@ for ax in fig.axes:
     ax.set_xlabel(r'$\theta_0$', fontsize=17)
     ax.set_ylabel(r'$\theta_1$', fontsize=17)
 
+# extra work
+
+data2 = np.loadtxt('ex1data2.txt', delimiter = ',')
+X2 = np.c_[data2[:,np.arange(data2.shape[1]-1)]]
+y2 = np.c_[data2[:,(data2.shape[1]-1)]]
+
+def featureNormalize(a):
+    X_norm = np.zeros(X2.shape)
+    mu = np.zeros((1,X_norm.shape[1]))
+    sigma = np.zeros((1,X_norm.shape[1]))
+    for l in np.arange(X_norm.shape[1]):
+        mu[0,l] = np.mean(a[:,l])
+        sigma[0,l] = np.std(a[:,l])
+        X_norm[:,l] = (a[:,l]-mu[0,l])/sigma[0,l]
+    return(X_norm, mu, sigma)
+    
+X_norm, mu, sigma = featureNormalize(X2)
+theta_2 = np.zeros((3,1))
+alpha_2 = 0.1
+num_iters_2 = 400
+theta_2,cost2 = gradientDescent(X_norm, y2, theta_2, alpha_2, num_iters_2)
+
+    
