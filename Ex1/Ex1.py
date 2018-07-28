@@ -108,5 +108,17 @@ theta_2 = np.zeros((3,1))
 alpha_2 = 0.1
 num_iters_2 = 400
 theta_2,cost2 = gradientDescent(X_norm, y2, theta_2, alpha_2, num_iters_2)
+print(theta_2)
+price = theta_2[0] + ((1650-mu[0,0])/sigma[0,0])*theta_2[1] + ((3-mu[0,1])/sigma[0,1])*theta_2[2]
+print(price)
 
-    
+def normalEqn(X,y):
+    Xtemp = np.c_[np.ones(X.shape[0]), X]
+    theta = np.zeros((Xtemp.shape[1],1))
+    theta = np.linalg.pinv(Xtemp.T@Xtemp)@Xtemp.T@y
+    return(theta)
+
+theta_3 = normalEqn(X2,y2)    
+print(theta_3)
+price2 = theta_3[0] + 1650*theta_3[1] + 3*theta_3[2]
+print(price2)
