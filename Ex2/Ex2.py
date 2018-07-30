@@ -102,7 +102,7 @@ X2temp = poly.fit_transform(X2)
 [m,n] = np.shape(X2temp)
 
 def costFunctionReg(theta_init,X,y,lambdo):
-    theta = theta_init.reshape((theta2_init.shape[0],1))
+    theta = theta_init.reshape((theta_init.shape[0],1))
     J = 0
     grad = np.zeros(theta.shape)
     thmod = grad + 1
