@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 from scipy.io import loadmat
 from scipy.optimize import minimize
+from sklearn.linear_model import LogisticRegression
 
 # Multi-class Classification
 def addThetaZero(X):
@@ -54,3 +55,48 @@ a = np.arange(10)
 b = 3
 print((a==b).astype(int))
 
+def oneVsAll(X,y,num_labels,lambdo):
+    all_theta = np.zeros((num_labels,n))
+    thetaInit = np.zeros((n,1))
+    for c in np.arange(1, num_labels+1):
+        out = minimize(lrcostFunctionReg, thetaInit, args=(X,(y==c)*1,lambdo),jac=True, options={'maxiter':50})
+        all_theta[c-1] = out.x
+    return(all_theta)
+
+num_labels = 10
+lambdo = 0.1
+
+all_theta = oneVsAll(X1temp, y1, num_labels, lambdo)
+    
+def predictOvA(allTheta, X):
+    p = sigmoid(X.dot(allTheta.T))
+    return(np.argmax(p, axis=1)+1)
+    
+p = predictOvA(all_theta, X1temp)
+print('Training set accuracy: {} %'.format(np.mean(p == y1.ravel())*100))
+
+autoLR = LogisticRegression(C=10)
+autoLR.fit(X1,y1.ravel())
+p2 = autoLR.predict(X1)
+print('Training set accuracy: {} %'.format(np.mean(p2 == y1.ravel())*100))
+
+# Neural Networks
+weightData = loadmat('ex3weights.mat')
+theta1 = weightData['Theta1']
+theta2 = weightData['Theta2']
+
+def predict(Theta1, Theta2, X):
+    a2 = sigmoid(X@(Theta1.T))
+    a2temp = addThetaZero(a2)
+    a3 = sigmoid(a2temp@(theta2.T))
+    return(np.argmax(a3, axis=1)+1)
+    
+p3 = predict(theta1, theta2, X1temp)
+print('Training set accuracy: {} %'.format(np.mean(p3 == y1.ravel())*100))
+
+rp = np.random.choice(m,1)
+rpred = predict(theta1, theta2, X1temp[rp,:])
+print('Neural Network Prediction: {}'.format(rpred.flat[0]))
+plt.imshow(X1[rp,:].reshape(-1,20).T)
+plt.axis('off')
+plt.show()
